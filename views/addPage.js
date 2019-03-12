@@ -33,6 +33,7 @@ module.exports = () => layout(`
         <textarea name="content"></textarea>
       </div>
     </div>
+    
     <div class="form-group">
       <label for="status" class="col-sm-2 control-label">Status</label>
       <div class="col-sm-10">
@@ -42,6 +43,17 @@ module.exports = () => layout(`
         </select>
       </div>
     </div>
+
+
+
+    <div class="form-group">
+      <label for="tags" class="col-sm-2 control-label">Tags</label>
+      <div class="col-sm-10">
+        <input name="tags" type="text" class="form-control" />
+      </div>
+    </div>
+
+
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-primary">submit</button>
     </div>

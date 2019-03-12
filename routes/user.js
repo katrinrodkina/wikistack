@@ -18,19 +18,26 @@ router.get("/", async (req, res, next) => {
     } catch (error) { next(error) }
   });
 
-  
+/// we've only said that a page belongs to a user. We should also specify that a user can have many pages.
   router.get('/:id', async(req, res, next) => {
 
     try {
-     const foundUser = await User.findById(req.params.id)
-     const foundPage = await Page.findAll({
-         where: {authorId:req.params.id}
-       })
-         res.send(userPages(foundUser,foundPage ))
+    //const user = await User.findById(req.params.id)
+     //const pages = await Page.findAll({ where: {authorId: req.params.id}});
+    // res.send(userPages(user,pages ))
+
+    const user = await User.findById(req.params.id, {
+      include: [Page]
+    })
+    res.send(userPages(user,user.pages ))
+
     }
          catch (error) { 
              next(error)
           } 
    });
+
+
+
 
 module.exports = router;

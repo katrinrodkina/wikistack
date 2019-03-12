@@ -6,20 +6,30 @@ const path = require("path");
 
 app.use(morgan("dev")); //logging middleware
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "./public"))); //serving up static files (e.g. css files)
 app.use(express.json());
 const models = require ('./models')
-const wikiRouter = require('./routes/wiki');
-const userRouter = require('./routes/user');
-// ...
-app.use('/wiki', wikiRouter);
-// or, in one line: app.use('/wiki', require('./routes/wiki'));
-app.use('/users', userRouter)
 
+app.use('/wiki', require('./routes/wiki'));
+app.use('/users', require('./routes/user'))
+ 
 app.get("/", (req, res) => {
   res.redirect("/wiki");
 })
-app.use(express.static(path.join(__dirname, "./public"))); //serving up static files (e.g. css files)
 
+const errorPage = require('./views/errorPage')
+app.use((err, req, res, next) => {
+  //console.error(err.stack)
+  res.status(500).send(errorPage(err))
+  
+})
+
+
+//404 handling
+const notFound = require('./views/notFound')
+app.use((req, res, next) => {
+  res.status(404).send(notFound())
+}) 
 
 
 
@@ -48,9 +58,12 @@ app.get("/", (req, res) => {
 
 
 const init = async () => {
-
-    await models.db.sync()
-
+// // this drops all tables then recreates them based on our JS definitions
+  //  await  models.db.sync({force: true})
+    await models.db.sync()//{ alter: true })
+//sync creates the table if it does not exist. alter true creates the tables 
+//and makes any changes to keep the modules in sync
+ 
 
     const PORT = 3000;
     app.listen(PORT, () => {
